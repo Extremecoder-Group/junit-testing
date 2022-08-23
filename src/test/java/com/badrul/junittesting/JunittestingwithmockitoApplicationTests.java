@@ -15,6 +15,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -63,5 +66,21 @@ class JunittestingwithmockitoApplicationTests {
         String resultContent = result.getResponse().getContentAsString();
         Employee response = om.readValue(resultContent, Employee.class);
         assertEquals("Badrul Bro", response.getName());
+    }
+
+    @Test
+    void getEmployeesTest() throws Exception {
+        when(employeeService.getEmployees())
+                .thenReturn(Stream.of(Employee.builder().id(1L).name("rezaul").mobile("01721-000000").build(),
+                                Employee.builder().id(1L).name("Karim").mobile("909090").build())
+                        .collect(Collectors.toList()));
+
+        MvcResult result = mockMvc
+                .perform(get("/employees").content(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk()).andReturn();
+
+        String resultContent = result.getResponse().getContentAsString();
+        Employee[] response = om.readValue(resultContent, Employee[].class);
+        assertEquals(2, response.length);
     }
 }
