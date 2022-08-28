@@ -13,8 +13,8 @@ import java.util.List;
 public class EmployeeService {
     private final EmployeeRepository repository;
 
-    public List<Employee> getEmployees() {
-        return repository.findAll();
+    public List<Employee> getEmployees() { // Act
+        return repository.findAll(); // Behavior, Stubbing: Arrange, when..then
     }
 
     public Employee save(Employee employee) {
@@ -35,4 +35,7 @@ public class EmployeeService {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Employee Not found!"));
     }
 
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
 }
